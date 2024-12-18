@@ -1,0 +1,16 @@
+ntfy.example.com, http://ntfy.example.com {
+  log {
+    output file /config/logs/notify.log {
+      roll_size 10mb
+      roll_keep 5
+      roll_keep_for 24h
+    }
+  }
+  reverse_proxy ntfy
+  @httpget {
+    protocol http
+    method GET
+    path_regexp ^/([-_a-z0-9]{0,64}$|docs/|static/)
+  }
+  redir @httpget https://{host}{uri}
+}

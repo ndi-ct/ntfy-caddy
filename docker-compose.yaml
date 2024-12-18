@@ -1,0 +1,33 @@
+services:
+
+  ntfy:
+    restart: always
+    container_name: ntfy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500k"
+        max-file: "1"
+    image: binwiederhier/ntfy
+    command: serve
+    environment:
+      - TZ=Europe/Berlin
+    volumes:
+      - ./ntfy/cache:/var/cache/ntfy
+      - ./ntfy/config:/etc/ntfy
+    expose:
+      - "80"
+
+  caddy:
+     image: caddy:alpine
+     restart: always
+     container_name: caddy
+     volumes:
+       - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+       - ./caddy/certs:/certs
+       - ./caddy/config:/config
+       - ./caddy/data:/data
+       - ./caddy/sites:/srv
+     ports:
+       - 80:80
+       - 443:443
